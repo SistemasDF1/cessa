@@ -1,0 +1,1148 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CESSA Universidad - Generador de Fotos de Graduación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Everett:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            font-family: 'Everett', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        /* Estilos para botón de cámara */
+        .camera-btn {
+            background: #3761e8;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(55, 97, 232, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px auto;
+            min-width: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .camera-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(55, 97, 232, 0.4);
+            background: #2850d1;
+        }
+        
+        .camera-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .camera-btn svg {
+            transition: transform 0.3s ease;
+        }
+        
+        .camera-btn:hover svg {
+            transform: scale(1.1);
+        }
+        
+        .camera-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .camera-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Estilos para botón de generar imagen */
+        .generate-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px auto;
+            min-width: 220px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(40, 167, 69, 0.4);
+            background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+        }
+        
+        .generate-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+        
+        .generate-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.2);
+            transform: none;
+        }
+        
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .generate-btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+        
+        /* Estilos para modal de cámara */
+        .camera-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .camera-modal[style*="block"] {
+            display: flex !important;
+        }
+        
+        .camera-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 248, 255, 0.98));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(55, 97, 232, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            max-width: 800px;
+            height: 859px;
+            width: 100%;
+            max-height: 150%;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        #cameraVideo {
+            width: 100%;
+            max-width: 800px;
+            height: 820px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            background: #000;
+        }
+        
+        #captureBtn, #closeCameraBtn {
+            background: #3761e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 10px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        #captureBtn:hover, #closeCameraBtn:hover {
+            background: #2850d1;
+            transform: translateY(-2px);
+        }
+        
+        /*  loader    */
+        
+        /* From uiverse.io by @JulioCodesSM */
+.loader {
+ width: 50px;
+ height: 50px;
+ position: relative;
+ transform: translateX(-25px);
+ /* Compensating for the left of 50px in the keyframe. */
+}
+
+.loader::before,
+.loader::after {
+ content: '';
+ position: absolute;
+ width: inherit;
+ height: inherit;
+ border-radius: 50%;
+ mix-blend-mode: multiply;
+ animation: rotate9 1s infinite cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.loader::before {
+ background-color: #3761e8;
+}
+
+.loader::after {
+ background-color: #ffd700;
+ animation-delay: .5s;
+}
+
+@keyframes rotate9 {
+ 0%,100% {
+  left: 50px;
+ }
+
+ 25% {
+  transform: scale(.3);
+ }
+
+ 50% {
+  left: 0;
+ }
+
+ 75% {
+  transform: scale(1);
+ }
+}
+        
+        
+        /*  loader    */
+        .logo-corner {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            transform: none;
+            z-index: 1000;
+            text-align: left;
+            pointer-events: auto;
+        }
+        .logo-corner img {
+            max-width: 300px;
+            width: 100%;
+            height: auto;
+            opacity: 0.95;
+            transition: opacity 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+        .logo-corner img:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        /* Estilo GLS (glass) para ventanas */
+        .gls-window {
+            background: #ffffff !important;
+            border: 2px solid rgba(55, 97, 232, 0.3) !important;
+            box-shadow: 0 12px 40px rgba(55, 97, 232, 0.2) !important;
+            backdrop-filter: blur(16px) saturate(170%);
+            -webkit-backdrop-filter: blur(16px) saturate(170%);
+        }
+        .gls-window h2,
+        .gls-window h3,
+        .gls-window p,
+        .gls-window label,
+        .gls-window span,
+        .gls-window div {
+            color: #1f2937;
+        }
+        .gls-window input {
+            background: #ffffff;
+            color: #1f2937;
+            border: 2px solid rgba(55, 97, 232, 0.3);
+        }
+        .gls-window input::placeholder {
+            color: rgba(107, 114, 128, 0.75);
+        }
+        .avatar {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px;
+            border-radius: 50%;
+        }
+        .avatar.selected img {
+           
+            box-shadow: 0 0 15px rgba(67, 68, 68, 0.5);
+            transform: scale(1.05);
+        }
+        .hair-option.selected {
+            background: #3761e8 !important;
+            color: white !important;
+            border-color: #3761e8 !important;
+        }
+        .skin-option.selected {
+            background: #3761e8 !important;
+            border-color: #3761e8 !important;
+        }
+        .skin-option.selected span {
+            color: white !important;
+        }
+        .accessory-option.selected {
+            background: #3761e8 !important;
+            color: white !important;
+            border-color: #3761e8 !important;
+        }
+
+        /* Media Queries para Responsividad */
+        @media (max-width: 768px) {
+            .logo-corner img {
+                width: 200px;
+                top: 10px;
+                left: 10px;
+            }
+            
+            .title {
+                font-size: 1.8rem !important;
+                margin-bottom: 40px !important;
+            }
+            
+            .avatars-container {
+                flex-direction: column !important;
+                gap: 20px !important;
+                align-items: center !important;
+            }
+            
+            .avatar img {
+                width: 150px !important;
+                height: 150px !important;
+            }
+            
+            #inicioContainer {
+                padding-top: 25vh !important;
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            
+            .name-section, .customization-section {
+                min-width: 90% !important;
+                max-width: 95% !important;
+                padding: 15px !important;
+                margin: 5px !important;
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                max-height: 95vh !important;
+                overflow-y: auto !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Ajustes específicos para customization-section en móvil */
+            .customization-section {
+                min-width: 95% !important;
+                max-width: 98% !important;
+                padding: 10px !important;
+            }
+            
+            /* Ajustes para el contenido de deseos */
+            .customization-section h3 {
+                font-size: 1rem !important;
+                margin-bottom: 8px !important;
+            }
+            
+            .customization-section p {
+                font-size: 0.8rem !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .accessory-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+            }
+            
+            .accessory-option {
+                padding: 8px !important;
+                font-size: 0.7rem !important;
+                border-radius: 8px !important;
+                text-align: center !important;
+            }
+            
+            /* Contador de accesorios en móvil */
+            .customization-section span {
+                font-size: 0.8rem !important;
+                padding: 4px 10px !important;
+            }
+            
+            /* Botón continuar en móvil */
+            #continue-photo-button {
+                padding: 10px 20px !important;
+                font-size: 0.9rem !important;
+                margin-top: 15px !important;
+            }
+            
+            /* Ajustes específicos para el generador en móvil */
+            #generatorContainer .main-content {
+                width: 95% !important;
+                max-width: 95% !important;
+                min-width: unset !important;
+                max-height: 80vh !important;
+                margin-top: 10px !important;
+                padding: 15px !important;
+                box-sizing: border-box !important;
+            }
+            
+            .camera-btn, .generate-btn {
+                padding: 12px 20px !important;
+                font-size: 0.9rem !important;
+                margin: 8px auto !important;
+                width: 100% !important;
+                max-width: 200px !important;
+                box-sizing: border-box !important;
+            }
+            
+            #user-name {
+                width: 250px !important;
+                font-size: 1rem !important;
+            }
+            
+            h2 {
+                font-size: 1.3rem !important;
+            }
+            
+            h3 {
+                font-size: 1.1rem !important;
+            }
+            
+            button {
+                padding: 10px 20px !important;
+                font-size: 1rem !important;
+            }
+
+            .shirts-grid {
+                grid-template-columns: repeat(2, minmax(150px, 1fr)) !important;
+                gap: 14px !important;
+                max-width: 100% !important;
+                padding: 0 6px !important;
+            }
+
+            .shirt-option {
+                padding: 12px !important;
+                border-radius: 12px !important;
+            }
+
+            .shirt-option img {
+                height: 120px !important;
+            }
+
+            .shirt-option div {
+                font-size: 0.85rem !important;
+            }
+
+            #frame-section {
+                padding: 20px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo-corner {
+                position: fixed !important;
+                top: 10px !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 100% !important;
+                text-align: center !important;
+            }
+            
+            .logo-corner img {
+                width: 220px;
+            }
+            
+            .title {
+                font-size: 1.5rem !important;
+                margin-bottom: 30px !important;
+            }
+            
+            .avatar img {
+                width: 150px !important;
+                height: 150px !important;
+            }
+            
+            #inicioContainer {
+                padding-top: 0vh !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+            
+            .name-section, .customization-section {
+                min-width: 98% !important;
+                max-width: 99% !important;
+                padding: 8px !important;
+                max-height: 98vh !important;
+                overflow-y: auto !important;
+                box-sizing: border-box !important;
+                margin: 2px !important;
+            }
+            
+            /* Ajustes específicos para deseos en móvil pequeño */
+            .customization-section h3 {
+                font-size: 0.9rem !important;
+                margin-bottom: 5px !important;
+            }
+            
+            .customization-section p {
+                font-size: 0.7rem !important;
+                margin-bottom: 8px !important;
+            }
+            
+            .accessory-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 6px !important;
+                max-width: 100% !important;
+            }
+            
+            .accessory-option {
+                padding: 6px !important;
+                font-size: 0.65rem !important;
+                border-radius: 6px !important;
+                min-height: 40px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            
+            /* Contador más pequeño */
+            .customization-section span {
+                font-size: 0.7rem !important;
+                padding: 3px 8px !important;
+            }
+            
+            #continue-photo-button {
+                padding: 8px 16px !important;
+                font-size: 0.8rem !important;
+                margin-top: 10px !important;
+            }
+            
+            /* Ajustes específicos para el generador en móvil pequeño */
+            #generatorContainer .main-content {
+                width: 98% !important;
+                max-width: 98% !important;
+                min-width: unset !important;
+                max-height: 85vh !important;
+                margin-top: 8px !important;
+                padding: 10px !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+            }
+
+            #generatorContainer .card {
+                margin-top: 0 !important;
+            }
+            
+            .camera-btn, .generate-btn {
+                padding: 10px 15px !important;
+                font-size: 0.8rem !important;
+                margin: 5px auto !important;
+                width: 100% !important;
+                max-width: 180px !important;
+                box-sizing: border-box !important;
+            }
+            
+            .result-image-container img {
+                max-width: 100% !important;
+                height: auto !important;
+                max-height: 40vh !important;
+            }
+            
+            h2 {
+                font-size: 1.2rem !important;
+            }
+            
+            h3 {
+                font-size: 1rem !important;
+            }
+
+            .shirts-grid {
+                grid-template-columns: repeat(2, minmax(140px, 1fr)) !important;
+                gap: 10px !important;
+                max-width: 100% !important;
+                padding: 0 4px !important;
+            }
+
+            .shirt-option {
+                padding: 10px !important;
+                border-radius: 10px !important;
+            }
+
+            .shirt-option img {
+                height: 110px !important;
+            }
+
+            .shirt-option div {
+                font-size: 0.8rem !important;
+            }
+
+            #frame-section {
+                padding: 15px !important;
+            }
+
+            .frame-options-container {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .frame-option {
+                width: 100% !important;
+                padding: 10px !important;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .logo-corner img {
+                width: 250px;
+            }
+            
+            .avatars-container {
+                gap: 30px !important;
+            }
+            
+            .avatar img {
+                width: 150px !important;
+                height: 150px !important;
+            }
+            
+            .name-section, .customization-section, .main-content {
+                min-width: 500px !important;
+                max-width: 80% !important;
+            }
+            
+            .accessory-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+                max-width: 550px !important;
+            }
+        }
+        
+        /* Ajustes para orientación landscape en móviles */
+        @media (max-height: 500px) and (orientation: landscape) {
+            #inicioContainer {
+                padding-top: 1vh !important;
+            }
+            
+            .name-section, .customization-section {
+                max-height: 90vh !important;
+                overflow-y: auto !important;
+            }
+            
+            #generatorContainer .main-content {
+                max-height: 90vh !important;
+                overflow-y: auto !important;
+                width: 90% !important;
+                padding: 8px !important;
+            }
+            
+            .title {
+                margin-bottom: 20px !important;
+                font-size: 1.3rem !important;
+            }
+        }
+        
+        /* Ajuste especial para pantallas muy pequeñas */
+        @media (max-height: 600px) {
+            #inicioContainer {
+                padding-top: 20vh !important;
+            }
+            
+            .name-section, .customization-section {
+                max-height: 85vh !important;
+                overflow-y: auto !important;
+            }
+            
+            #generatorContainer .main-content {
+                max-height: 85vh !important;
+                overflow-y: auto !important;
+                padding: 8px !important;
+            }
+        }
+        
+        /* Estilos adicionales para prevenir overflow */
+        .upload-section, .result-section {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        .card {
+            box-sizing: border-box !important;
+            width: 100% !important;
+          
+        }
+        
+        .preview-container img, .result-image-container img {
+            max-width: 100% !important;
+            height: auto !important;
+            box-sizing: border-box !important;
+        }
+        
+        @media (max-width: 768px) {
+            .preview-container img {
+                max-height: 25vh !important;
+            }
+            
+            .result-image-container img {
+                max-height: 60vh !important;
+                object-fit: contain !important;
+            }
+
+            .result-section {
+                width: 100% !important;
+            }
+
+            .result-card {
+                width: 100% !important;
+                padding: 16px !important;
+            }
+
+            #generatorContainer .main-content {
+                max-height: 95vh !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .preview-container img {
+                max-height: 20vh !important;
+            }
+            
+            .result-image-container img {
+                max-height: 70vh !important;
+                object-fit: contain !important;
+            }
+
+            .result-section {
+                width: 100% !important;
+            }
+
+            .result-card {
+                width: 100% !important;
+                padding: 12px !important;
+            }
+
+            #generatorContainer .main-content {
+                max-height: 96vh !important;
+            }
+        }
+    </style>
+</head>
+    <body oncontextmenu="return false;">
+        <!-- Checkbox de aceptación de términos y enlace al modal -->
+        
+        <!-- Modal érminos y condiciones -->
+        <div id="termsModal" class="terms-modal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);z-index:20000;display:none;align-items:center;justify-content:center;">
+            <div class="terms-modal-content" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 249, 255, 0.95)); backdrop-filter: blur(20px); border: 1px solid rgba(59, 130, 246, 0.3);max-width:700px;width:95vw;padding:32px 28px;border-radius:18px;box-shadow:0 8px 32px rgba(31, 38, 135, 0.37);overflow-y:auto;max-height:90vh;">
+                <h2 style="margin-top:0; font-size:2rem; color:#1f2937; text-shadow: 0 1px 2px rgba(255,255,255,0.5); font-weight: bold;">Términos y Condiciones</h2>
+                <ol style="margin-left:18px; color:#1f2937;">
+                    <li style="color:#1f2937; margin-bottom:15px;"><b>Consentimiento para Fotografía y Procesamiento con IA</b><br>
+                        Usted autoriza que se le tome una fotografía y entiende que la misma será procesada y alterada creativamente por un modelo de inteligencia artificial generativa. Los resultados se generan de manera automática y tienen fines recreativos y demostrativos.
+                    </li>
+                    <li style="color:#1f2937; margin-bottom:15px;"><b>Uso de Imágenes, Nombres o Logos de Terceros (Descargo de Responsabilidad de Afiliación)</b><br>
+                        Las imágenes generadas pueden incluir, de forma automática, nombres, logos o referencias a marcas y organizaciones de terceros.<br>
+                        Esto se realiza únicamente con fines de demostración y entretenimiento.<br>
+                        Esta experiencia no tiene fines comerciales, no genera ingresos y no implica afiliación, patrocinio o respaldo por parte de dichas marcas.<br>
+                        Todas las marcas comerciales mencionadas o representadas pertenecen a sus respectivos propietarios.
+                    </li>
+                    <li style="color:#1f2937; margin-bottom:15px;"><b>Exhibición Pública</b><br>
+                        Las fotografías originales y/o generadas con IA que incluyan su imagen podrán ser exhibidas en pantallas, monitores o dispositivos visibles dentro del espacio donde se realiza la actividad, durante la duración de la misma.
+                    </li>
+                    <li style="color:#1f2937; margin-bottom:15px;"><b>Aceptación de Términos</b><br>
+                        Si usted no está de acuerdo con estos Términos y Condiciones, por favor absténgase de participar en esta experiencia fotográfica.
+                    </li>
+                </ol>
+                <button id="closeTermsModal" style="margin-top:18px;padding:10px 28px;font-size:1.1rem;background:#3761e8;color:#ffffff;border:none;border-radius:8px;cursor:pointer;font-weight:bold;box-shadow: 0 4px 15px rgba(55, 97, 232, 0.3);">Cerrar</button>
+            </div>
+        </div>
+
+    <video autoplay muted loop class="video-background">
+        <source src="img/fondo-universidad.mp4" type="video/mp4">
+    </video>
+    
+
+    <div class="container" id="inicioContainer" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;padding-top:5vh; transition: opacity 0.3s;">
+        <!-- Logo CESSA -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <img src="icons/cessa.png" alt="CESSA Universidad" style="max-width: 250px; height: auto;">
+        </div>
+        
+        <!-- Paso 1: Términos y condiciones -->
+        <div id="terms-section" style="display: block; position: relative; text-align: center; background: #ffffff; backdrop-filter: blur(20px); border: 2px solid rgba(55, 97, 232, 0.3); padding: 40px; border-radius: 20px; box-shadow: 0 8px 32px rgba(55, 97, 232, 0.2); min-width: 320px; margin-bottom: 30px;">
+            <h2 style="color: #3761e8; font-size: 1.5rem; margin-bottom: 20px; text-shadow: none; font-weight: bold;">Términos y Condiciones</h2>
+            <div class="terms-accept-container" style="display:flex;align-items:center;gap:10px;justify-content:center;margin:6px 0 2px 0; z-index: 1000;">
+                <input type="checkbox" id="termsCheckbox" style="width:20px;height:20px;accent-color:#3761e8;">
+                <label for="termsCheckbox" style="font-size:1.1rem;cursor:pointer;user-select:none;color:#1f2937; font-weight: 600;">
+                    Aceptar <a href="#" id="openTermsModal" style="color:#3761e8;text-decoration:underline;font-weight:bold;">Términos y Condiciones</a>
+                </label>
+            </div>
+            <button id="btn-terms-next" style="background: #3761e8; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; margin-top: 18px; box-shadow: 0 4px 15px rgba(55, 97, 232, 0.3);" disabled>Continuar</button>
+        </div>
+        <!-- Paso 2: Nombre -->
+        <div id="name-first-section" style="display: none; position: relative; text-align: center; background: #ffffff; backdrop-filter: blur(20px); border: 2px solid rgba(55, 97, 232, 0.3); padding: 40px; border-radius: 20px; box-shadow: 0 8px 32px rgba(55, 97, 232, 0.2); min-width: 320px; margin-bottom: 30px;">
+            <h2 style="color: #3761e8; font-size: 1.5rem; margin-bottom: 20px; text-shadow: none; font-weight: bold;">¿Cuál es tu nombre?</h2>
+            <input type="text" id="user-name" placeholder="Escribe tu nombre aquí" style="width: 300px; padding: 15px; border: 2px solid rgba(31, 41, 55, 0.3); border-radius: 25px; font-size: 1.2rem; text-align: center; margin-bottom: 20px; outline: none; transition: border-color 0.3s ease; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); color: #1f2937;" onfocus="this.style.borderColor='#1f2937'" onblur="this.style.borderColor='rgba(31, 41, 55, 0.3)'">
+            <br>
+            <button id="btn-name-next" style="background: #3761e8; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; box-shadow: 0 4px 15px rgba(55, 97, 232, 0.3);">Continuar</button>
+        </div>
+        <!-- Paso 3: Selección de Carrera -->
+        <div id="shirt-section" style="display:none;flex-direction:column;align-items:center;position:relative;text-align:center;background: #ffffff; backdrop-filter: blur(20px); border: 2px solid rgba(55, 97, 232, 0.3);padding:40px;border-radius:20px;box-shadow: 0 8px 32px rgba(55, 97, 232, 0.2);">
+            <h2 style="color: #3761e8; font-size: 1.5rem; margin-bottom: 30px; text-shadow: none; font-weight: bold;">Selecciona tu carrera</h2>
+            <div class="shirts-grid" id="shirts-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:20px;max-width:800px;margin-bottom:20px;">
+            </div>
+            <button id="btn-shirt-next" style="background: #3761e8; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; margin-top: 20px; box-shadow: 0 4px 15px rgba(55, 97, 232, 0.3);" disabled>Continuar</button>
+        </div>
+        <!-- Paso 4: Selección de Marco Universitario (Nuevo) -->
+        <div id="frame-section" style="display:none;flex-direction:column;align-items:center;position:relative;text-align:center;background: #ffffff; backdrop-filter: blur(20px); border: 2px solid rgba(55, 97, 232, 0.3);padding:40px;border-radius:20px;box-shadow: 0 8px 32px rgba(55, 97, 232, 0.2);">
+            <h2 style="color: #3761e8; font-size: 1.5rem; margin-bottom: 30px; text-shadow: none; font-weight: bold;">Elige el estilo de tu foto</h2>
+            <div class="frame-options-container" id="frames-grid" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0;max-width:800px;">
+                <!-- Se llena con JS -->
+            </div>
+            <button id="btn-frame-next" style="background: #3761e8; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; margin-top: 20px; box-shadow: 0 4px 15px rgba(55, 97, 232, 0.3);" disabled>Continuar</button>
+        </div>
+    </div>
+    <script>
+        function mostrarAvatares() {
+            var nombre = document.getElementById('user-name').value.trim();
+            if (!nombre) {
+                alert('Por favor, ingresa tu nombre');
+                return;
+            }
+            window.nombreUsuario = nombre;
+            document.getElementById('name-first-section').style.display = 'none';
+            document.getElementById('shirt-section').style.display = 'block';
+            cargarCamisetas();
+            updateTermsState();
+        }
+
+        function cargarCamisetas() {
+            const shirtsList = [
+                { name: 'Administración de Negocios de la Hospitalidad Online', file: '💻', color: '#3761e8' },
+                { name: 'Administración de Restaurantes', file: '🍽️', color: '#ff6600' },
+                { name: 'Administración Hotelera', file: '🏨', color: '#0066ff' },
+                { name: 'Gastronomía Internacional', file: '🍳', color: '#dc3545' },
+                { name: 'Gastronomía y Ciencias de los Alimentos', file: '🥘', color: '#e83e8c' },
+                { name: 'Gestión de Negocios de la Hospitalidad', file: '📊', color: '#17a2b8' },
+                { name: 'Gestión de Negocios Gastronómicos', file: '💼', color: '#ff9800' },
+                { name: 'Gestión Hotelera', file: '🗝️', color: '#795548' },
+                { name: 'Nutrición y Ciencias de los Alimentos', file: '🥗', color: '#4caf50' },
+                { name: 'Relaciones Públicas y Dirección de Eventos', file: '🎤', color: '#9c27b0' },
+                { name: 'Relaciones Públicas y Organización de Eventos', file: '🎉', color: '#f44336' },
+                { name: 'Relaciones Públicas y Organización de Eventos Online', file: '📱', color: '#00bcd4' }
+            ];
+
+            const grid = document.getElementById('shirts-grid');
+            grid.innerHTML = '';
+
+            shirtsList.forEach(shirt => {
+                const div = document.createElement('div');
+                div.className = 'shirt-option';
+                div.style.cssText = 'padding:15px;background:#f8f9fa;border:2px solid #e9ecef;border-radius:15px;cursor:pointer;transition:all 0.3s ease;text-align:center;';
+                div.innerHTML = `<div style="font-size:3rem;margin-bottom:10px;">${shirt.file}</div>
+                                <div style="font-size:0.9rem;color:#666;font-weight:600;">${shirt.name}</div>`;
+                
+                div.addEventListener('click', () => selectShirt(shirt, div));
+                grid.appendChild(div);
+            });
+        }
+
+        function cargarMarcos() {
+            // Definimos los estilos de marcos universitarios
+            const marcosList = [
+                { name: 'Dorado Premium', id: 'marco elegante dorado premium universitario diplomas', color: 'linear-gradient(135deg, #d4af37, #ffd700, #ffed4e)' },
+                { name: 'Azul CESSA', id: 'marco azul institucional cessa universidad profesional', color: 'linear-gradient(135deg, #0047ab, #0066ff, #4da6ff)' },
+                { name: 'Plateado Moderno', id: 'marco plateado moderno minimalista universitario', color: 'linear-gradient(135deg, #a8a8a8, #d3d3d3, #f5f5f5)' },
+                { name: 'Negro Elegante', id: 'marco negro elegante clásico formal graduación', color: 'linear-gradient(135deg, #000000, #2c2c2c, #4a4a4a)' },
+                { name: 'Borgoña Tradicional', id: 'marco borgoña tradicional académico universitario', color: 'linear-gradient(135deg, #800020, #a0153e, #c71585)' },
+                { name: 'Verde Académico', id: 'marco verde académico institucional universidad', color: 'linear-gradient(135deg, #006400, #228b22, #32cd32)' },
+                { name: 'Bronce Clásico', id: 'marco bronce clásico vintage universitario antiguo', color: 'linear-gradient(135deg, #8b4513, #a0522d, #cd853f)' },
+                { name: 'Azul Real', id: 'marco azul real premium royal universitario', color: 'linear-gradient(135deg, #002366, #003d82, #1e5aa8)' },
+                { name: 'Blanco Sofisticado', id: 'marco blanco sofisticado perlado universitario', color: 'linear-gradient(135deg, #f8f9fa, #ffffff, #e9ecef)' },
+                { name: 'Multicolor CESSA', id: 'marco multicolor cessa institucional vibrante moderno', color: 'linear-gradient(135deg, #0066ff, #00bcd4, #ffd700)' }
+            ];
+
+            const grid = document.getElementById('frames-grid');
+            grid.innerHTML = '';
+
+            marcosList.forEach(marco => {
+                const div = document.createElement('div');
+                div.className = 'frame-option';
+                div.style.cssText = `padding:15px;background:white;border:2px solid #e9ecef;border-radius:15px;cursor:pointer;transition:all 0.3s ease;text-align:center;width:120px;display:flex;flex-direction:column;align-items:center;gap:10px;`;
+                // Usamos un truco de CSS para mostrar solo el borde con el degradado (marco) y el centro blanco
+                div.innerHTML = `<div style="width:100%;height:80px;background:linear-gradient(#fff, #fff) padding-box, ${marco.color} border-box;border: 5px solid transparent;border-radius:8px;margin-bottom:5px;box-shadow:0 2px 5px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;">
+                                    <span style="font-size:1.5rem;opacity:0.2;">🎓</span>
+                                </div>
+                                <span style="font-size:0.9rem;font-weight:600;color:#333;">${marco.name}</span>`;
+                
+                div.addEventListener('click', () => {
+                    document.querySelectorAll('.frame-option').forEach(opt => {
+                        opt.style.borderColor = '#e9ecef';
+                        opt.style.transform = 'none';
+                    });
+                    div.style.borderColor = '#3761e8';
+                    div.style.transform = 'scale(1.05)';
+                    window.marcoSeleccionado = marco.id; // Guardamos la selección para app.js
+                    document.getElementById('btn-frame-next').disabled = false;
+                });
+                grid.appendChild(div);
+            });
+        }
+
+        function selectShirt(shirt, element) {
+            // Remover selección anterior
+            document.querySelectorAll('.shirt-option').forEach(option => {
+                option.style.background = '#f8f9fa';
+                option.style.borderColor = '#e9ecef';
+                option.style.transform = 'none';
+                // Restaurar color del texto
+                option.querySelectorAll('div').forEach(div => {
+                    if (div.textContent.length > 2) { // Es el texto del nombre
+                        div.style.color = '#666';
+                    }
+                });
+            });
+            
+            // Marcar nueva selección
+            element.style.background = '#3761e8';
+            element.style.borderColor = '#3761e8';
+            element.style.color = 'white';
+            element.style.transform = 'scale(1.05)';
+            // Cambiar color de TODOS los divs internos a blanco
+            element.querySelectorAll('div').forEach(div => {
+                div.style.color = 'white';
+            });
+            
+            window.camisetaSeleccionada = shirt;
+            document.getElementById('btn-shirt-next').disabled = false;
+        }
+
+        // Multipasos: términos -> nombre -> camiseta
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('shirt-section').style.display = 'none';
+            document.getElementById('name-first-section').style.display = 'none';
+            document.getElementById('frame-section').style.display = 'none';
+            // Paso 1: Términos
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            const btnTermsNext = document.getElementById('btn-terms-next');
+            termsCheckbox.checked = false;
+            btnTermsNext.disabled = true;
+            termsCheckbox.addEventListener('change', function() {
+                btnTermsNext.disabled = !termsCheckbox.checked;
+            });
+            btnTermsNext.addEventListener('click', function() {
+                if (termsCheckbox.checked) {
+                    document.getElementById('terms-section').style.display = 'none';
+                    document.getElementById('name-first-section').style.display = 'block';
+                }
+            });
+            // Paso 2: Nombre
+            document.getElementById('btn-name-next').addEventListener('click', function() {
+                var nombre = document.getElementById('user-name').value.trim();
+                if (!nombre) {
+                    alert('Por favor, ingresa tu nombre');
+                    return;
+                }
+                window.nombreUsuario = nombre;
+                document.getElementById('name-first-section').style.display = 'none';
+                document.getElementById('shirt-section').style.display = 'block';
+                cargarCamisetas();
+            });
+            // Paso 3: Camiseta
+            document.getElementById('btn-shirt-next').addEventListener('click', function() {
+                if (window.camisetaSeleccionada) {
+                    document.getElementById('shirt-section').style.display = 'none';
+                    document.getElementById('frame-section').style.display = 'block';
+                    cargarMarcos();
+                }
+            });
+            // Paso 4: Marco (Nuevo Listener)
+            document.getElementById('btn-frame-next').addEventListener('click', function() {
+                if (window.marcoSeleccionado) {
+                    document.getElementById('frame-section').style.display = 'none';
+                    document.getElementById('inicioContainer').style.display = 'none';
+                    document.getElementById('generatorContainer').style.display = 'block';
+                    abrirCamaraAutomatica();
+                }
+            });
+        });
+
+        function abrirCamaraAutomatica() {
+            setTimeout(() => {
+                document.getElementById('cameraBtn').click();
+            }, 100);
+        }
+    </script>
+    <div class="container" id="generatorContainer" style="display:none;">
+        <!-- Logo CESSA -->
+        <div style="text-align: center; margin-bottom: 20px; margin-top: 20px;">
+            <img src="icons/cessa.png" alt="CESSA Universidad" style="max-width: 200px; height: auto;">
+        </div>
+        
+        <main class="main-content" style="position: relative; margin: 32px auto; text-align: center; background: #ffffff; backdrop-filter: blur(20px); border: 2px solid rgba(55, 97, 232, 0.3); padding: 20px; border-radius: 20px; box-shadow: 0 8px 32px rgba(55, 97, 232, 0.2); width: 90%; max-width: 500px; box-sizing: border-box;">
+            <div class="upload-section">
+                <div class="card" style="background: transparent; box-shadow: none; padding: 0;">
+                    
+                    <div class="upload-area" id="uploadArea">
+                    
+                        <button class="camera-btn" id="cameraBtn" type="button">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                            Usar cámara
+                        </button>
+                        
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                        <button class="camera-btn" id="uploadBtn" type="button" style="display: none; background: #3761e8; margin-top: 10px;">
+                            <span style="font-size: 1.2rem;">📁</span>
+                            Subir foto
+                        </button>
+
+                        <div class="preview-container" id="previewContainer" style="display: none;">
+                            <img id="imagePreview" alt="Preview">
+                            <button class="remove-btn" id="removeBtn" title="Quitar imagen">
+                                <span style="display:flex;align-items:center;justify-content:center;width:20px;height:20px;color:#fff;font-size:1.3rem;font-weight:bold;line-height:1;">×</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="display: none;">
+                   
+                    <input type="hidden" id="promptInput" value="">
+                </div>
+
+                <button class="generate-btn" id="generateBtn" disabled>
+                    <span class="btn-text" >Generar Imagen</span>
+                </button>
+
+            </div>
+
+            <div class="result-section" id="resultSection" style="display: none; margin-top: -20px;">
+                <div class="card result-card">
+                    <h2 style="color: #3761e8; font-weight: bold; text-shadow: none;">Tu creación</h2>
+                    <div class="result-image-container">
+                        <img id="resultImage" alt="Generated Image">
+                    </div>
+                    <div id="qr-container" style="margin: 25px 0; text-align: center;"></div>
+                    <div class="result-actions" style="display: flex; flex-direction: column; gap: 16px; align-items: center; margin-top: 18px;">
+                        <button class="action-btn download-btn" id="downloadBtn" onclick="downloadImage()" style="width: 200px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Descargar
+                        </button>
+                        <button class="action-btn secondary" id="newBtn" onclick="reiniciarProceso()" style="width: 200px;">
+                            Crear otra
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="loading-overlay" id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 9999; justify-content: center; align-items: center;">
+            <div class="loader"></div>
+        </div>
+
+        <div class="toast" id="toast"></div>
+
+       
+    </div>
+
+    <!-- Modal de cámara -->
+<div class="camera-modal" id="cameraModal">
+    <div class="camera-content">
+        <video id="cameraVideo" autoplay playsinline></video>
+        <div id="countdown" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:8rem;color:white;font-weight:bold;text-shadow:0 0 20px rgba(0,0,0,0.8);display:none;pointer-events:none;z-index:10001;">3</div>
+        <button id="captureBtn">Capturar foto</button>
+        <button id="closeCameraBtn">Cerrar</button>
+    </div>
+</div>
+
+    <script src="app.js"></script>
+    <script>
+        // Modal de términos y condiciones (solo se abre bajo demanda)
+        const termsModal = document.getElementById('termsModal');
+        const openTermsModal = document.getElementById('openTermsModal');
+        const closeTermsModal = document.getElementById('closeTermsModal');
+        if (openTermsModal && termsModal && closeTermsModal) {
+            openTermsModal.addEventListener('click', function(e) {
+                e.preventDefault();
+                termsModal.style.display = 'flex';
+            });
+            closeTermsModal.addEventListener('click', function() {
+                termsModal.style.display = 'none';
+            });
+        }
+    </script>
+    <script>
+        function reiniciarProceso() {
+            // Oculta todas las secciones
+            document.getElementById('generatorContainer').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('cameraModal').style.display = 'none';
+
+            // Limpiar campos
+            document.getElementById('user-name').value = '';
+            document.getElementById('imagePreview').src = '';
+            document.getElementById('previewContainer').style.display = 'none';
+
+            // Resetear variables globales
+            window.nombreUsuario = null;
+            window.camisetaSeleccionada = null;
+            document.getElementById('btn-shirt-next').disabled = true;
+
+            // Mostrar pantalla inicial (términos y condiciones)
+            document.getElementById('terms-section').style.display = 'block';
+            document.getElementById('name-first-section').style.display = 'none';
+            document.getElementById('shirt-section').style.display = 'none';
+            document.getElementById('frame-section').style.display = 'none';
+            document.getElementById('inicioContainer').style.display = 'flex';
+            document.getElementById('termsCheckbox').checked = false;
+            document.getElementById('btn-terms-next').disabled = true;
+            document.body.style.overflow = '';
+        }
+
+        // Bloquear el clic derecho en toda la página
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
