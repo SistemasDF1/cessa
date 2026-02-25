@@ -152,8 +152,8 @@ async function generateImage() {
     const carrera = window.camisetaSeleccionada;
     const nombreCarrera = carrera ? carrera.name : 'la seleccionada';
     
-    // Prompt simple sin texto
-    let prompt = `Retrato conmemorativo de 50 años de CESSA. Persona graduada profesional. Fondo azul marino con destellos dorados, luz cinematográfica suave, estilo profesional emotivo y moderno, alta resolución y ultra detallado.`;
+    // Prompt simple sin texto ni letras en la imagen
+    let prompt = `Retrato conmemorativo de 50 años de CESSA. Persona graduada profesional. Fondo azul marino con destellos dorados, luz cinematográfica suave, estilo profesional emotivo y moderno, alta resolución y ultra detallado. SIN TEXTO, SIN LETRAS, SIN TIPOGRAFÍA, SIN PALABRAS en la imagen.`;
 
     promptInput.value = prompt;
 
