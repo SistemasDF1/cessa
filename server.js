@@ -84,7 +84,7 @@ async function cleanOldFiles() {
 async function processImage(base64Image) {
   try {
     const imageBuffer = Buffer.from(base64Image, 'base64');
-    // const watermarkPath = path.join(__dirname, 'public', 'img', 'Kyndryl_pie.png');
+    const marcoPath = path.join(__dirname, 'marco.png');
     
     // Procesar imagen principal
     const processedImage = await sharp(imageBuffer)
@@ -95,20 +95,28 @@ async function processImage(base64Image) {
       .png()
       .toBuffer();
     
-    // Obtener dimensiones de la marca de agua
-    // const watermarkInfo = await sharp(watermarkPath).metadata();
+    // Procesar marco: redimensionar al tamaño de la imagen
+    const marcoResized = await sharp(marcoPath)
+      .resize(2400, 3600, {
+        fit: 'fill'
+      })
+      .png()
+      .toBuffer();
     
-    // Combinar imagen con marca de agua en la parte inferior
-    // const finalImage = await sharp(processedImage)
-    //   .composite([{
-    //     input: watermarkPath,
-    //     gravity: 'south'
-    //   }])
-    //   .png()
-    //   .toBuffer();
+    // Combinar imagen con marco
+    const finalImage = await sharp(processedImage)
+      .composite([
+        {
+          input: marcoResized,
+          top: 0,
+          left: 0,
+          blend: 'over'
+        }
+      ])
+      .png()
+      .toBuffer();
     
-    // return finalImage.toString('base64');
-    return processedImage.toString('base64');
+    return finalImage.toString('base64');
   } catch (error) {
     console.error('Error procesando imagen:', error);
     throw error;

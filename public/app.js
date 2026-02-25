@@ -151,44 +151,9 @@ async function generateImage() {
     const nombre = window.nombreUsuario || 'Usuario';
     const carrera = window.camisetaSeleccionada;
     const nombreCarrera = carrera ? carrera.name : 'la seleccionada';
-    const estiloMarco = window.marcoSeleccionado || 'dorado elegante';
     
-    // Conjunto de prompts específicos por carrera
-    const promptsPorCarrera = {
-        'Administración de Negocios de la Hospitalidad Online': `Retrato conmemorativo de 50 años de CESSA. Persona con ${nombre}, estudiante de Administración de Negocios de la Hospitalidad Online. Medalla dorada "50" destacada, elementos digitales y modernos, tablet/dispositivos tecnológicos sutiles, fondo azul marino con destellos dorados, estilo ejecutivo profesional, luz cinematográfica suave, aura de innovación y transformación digital, tipografía elegante.`,
-        
-        'Administración de Restaurantes': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, egresado de Administración de Restaurantes. Medalla dorada "50", elementos sutiles de gastronomía (cubiertos finos, platillos gourmet), fondo azul marino con destellos dorados, luz suave tipo retrato profesional, aura de excelencia culinaria y gestión, estilo cinematográfico elegante, tipografía refinada.`,
-        
-        'Administración Hotelera': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, licenciado en Administración Hotelera. Medalla dorada "50", elementos hoteleros sutiles (llaves de oro, detalles de lujo), fondo azul marino con destellos dorados, luz profesional cinematográfica, aura de hospitalidad y elegancia, tipografía sofisticada, estilo ejecutivo moderno y emotivo.`,
-        
-        'Gastronomía Internacional': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, Chef especializado en Gastronomía Internacional. Medalla dorada "50", elementos culinarios internacionales (especias, ingredientes gourmet, arte culinario), fondo azul marino con destellos dorados, luz suave tipo retrato profesional, aura de maestría gastronómica global, tipografía elegante, estilo cinématico y artístico.`,
-        
-        'Gastronomía y Ciencias de los Alimentos': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, egresado de Gastronomía y Ciencias de los Alimentos. Medalla dorada "50", elementos científicos y culinarios fusionados (laboratorio, ingredientes naturales), fondo azul marino con destellos dorados, luz profesional cinematográfica, aura de innovación gastronómica, tipografía moderna y elegante, estilo sofisticado.`,
-        
-        'Gestión de Negocios de la Hospitalidad': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, administrador en Gestión de Negocios de la Hospitalidad. Medalla dorada "50", elementos de gestión empresarial y hospitalidad (gráficos, símbolos de excelencia), fondo azul marino con destellos dorados, luz suave tipo retrato profesional, aura de liderazgo y servicio, tipografía ejecutiva elegante.`,
-        
-        'Gestión de Negocios Gastronómicos': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, gestor en Gestión de Negocios Gastronómicos. Medalla dorada "50", elementos gastronómicos empresariales (ingredientes premium, símbolos de negocio), fondo azul marino con destellos dorados, luz cinematográfica suave, aura de emprendimiento culinario y éxito, tipografía sofisticada y moderna.`,
-        
-        'Gestión Hotelera': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, gestor hotelero. Medalla dorada "50", elementos de gestión hotelera (llaves de lujo, símbolos de hospitalidad), fondo azul marino con destellos dorados, luz suave profesional, aura de hospitalidad de clase mundial, tipografía elegante ejecutiva, estilo cinématico sofisticado.`,
-        
-        'Nutrición y Ciencias de los Alimentos': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, nutriólogo especializado en Ciencias de los Alimentos. Medalla dorada "50", elementos nutricionales científicos (frutas, verduras, equilibrio saludable), fondo azul marino con destellos dorados, luz profesional suave, aura de salud y bienestar, tipografía moderna elegante, estilo cinématico y cuidadoso.`,
-        
-        'Relaciones Públicas y Dirección de Eventos': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, profesional en Relaciones Públicas y Dirección de Eventos. Medalla dorada "50", elementos de eventos y comunicación (luces, símbolos de conexión), fondo azul marino con destellos dorados, luz dramática cinematográfica, aura de creatividad y liderazgo comunicativo, tipografía moderna sofisticada.`,
-        
-        'Relaciones Públicas y Organización de Eventos': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, organizador de Relaciones Públicas y Eventos. Medalla dorada "50", elementos festivos y profesionales (confetti dorado, símbolos de celebración), fondo azul marino con destellos dorados, luz suave tipo retrato profesional, aura de dinamismo y excelencia, tipografía elegante y moderna.`,
-        
-        'Relaciones Públicas y Organización de Eventos Online': `Retrato conmemorativo de 50 años de CESSA. ${nombre}, especialista en Relaciones Públicas y Eventos Online. Medalla dorada "50", elementos digitales y conectados (redes, tecnología), fondo azul marino con destellos dorados, luz cinematográfica moderna, aura de innovación digital y liderazgo, tipografía contemporánea elegante, estilo futurista y sofisticado.`
-    };
-    
-    // Seleccionar prompt según carrera o usar genérico
-    let prompt = promptsPorCarrera[nombreCarrera];
-    
-    if (!prompt) {
-        prompt = `Retrato conmemorativo de 50 años de CESSA Universidad. ${nombre}, estudiante de ${nombreCarrera}. 
-Medalla dorada "50" destacada, elementos representativos de la carrera, fondo azul marino con destellos dorados, 
-luz cinematográfica suave, aura de celebración y legado académico, tipografía elegante, 
-estilo profesional emotivo y moderno, alta resolución y ultra detallado.`;
-    }
+    // Prompt simple sin texto
+    let prompt = `Retrato conmemorativo de 50 años de CESSA. Persona graduada profesional. Fondo azul marino con destellos dorados, luz cinematográfica suave, estilo profesional emotivo y moderno, alta resolución y ultra detallado.`;
 
     promptInput.value = prompt;
 
@@ -386,24 +351,6 @@ function abrirCamara() {
 function continuarFoto() {
     document.getElementById('skinSelectionContainer').style.display = 'none';
     document.getElementById('generatorContainer').style.display = 'block';
-}
-
-// Función para seleccionar marco
-function selectFrame(estiloMarco) {
-    // Remover selección anterior
-    document.querySelectorAll('.frame-option').forEach(option => {
-        option.style.border = '2px solid #e9ecef';
-    });
-    
-    // Marcar opción seleccionada
-    document.querySelectorAll('.frame-option').forEach(option => {
-        if (option.getAttribute('onclick') && option.getAttribute('onclick').includes(estiloMarco)) {
-            option.style.border = '2px solid #434444ff';
-        }
-    });
-    
-    // Guardar selección
-    window.marcoSeleccionado = estiloMarco;
 }
 
 // Función para mostrar QR de descarga

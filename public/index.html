@@ -467,10 +467,6 @@
             .shirt-option div {
                 font-size: 0.85rem !important;
             }
-
-            #frame-section {
-                padding: 20px !important;
-            }
         }
         
         @media (max-width: 480px) {
@@ -609,21 +605,6 @@
 
             .shirt-option div {
                 font-size: 0.8rem !important;
-            }
-
-            #frame-section {
-                padding: 15px !important;
-            }
-
-            .frame-options-container {
-                display: grid !important;
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 10px !important;
-            }
-
-            .frame-option {
-                width: 100% !important;
-                padding: 10px !important;
             }
         }
         
@@ -826,14 +807,6 @@
             </div>
             <button id="btn-shirt-next" style="background: #3761e8; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; margin-top: 20px; box-shadow: 0 4px 15px rgba(55, 97, 232, 0.3);" disabled>Continuar</button>
         </div>
-        <!-- Paso 4: Selección de Marco Universitario (Nuevo) -->
-        <div id="frame-section" style="display:none;flex-direction:column;align-items:center;position:relative;text-align:center;background: #ffffff; backdrop-filter: blur(20px); border: 2px solid rgba(55, 97, 232, 0.3);padding:40px;border-radius:20px;box-shadow: 0 8px 32px rgba(55, 97, 232, 0.2);">
-            <h2 style="color: #3761e8; font-size: 1.5rem; margin-bottom: 30px; text-shadow: none; font-weight: bold;">Elige el estilo de tu foto</h2>
-            <div class="frame-options-container" id="frames-grid" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0;max-width:800px;">
-                <!-- Se llena con JS -->
-            </div>
-            <button id="btn-frame-next" style="background: #3761e8; color: white; border: none; padding: 12px 30px; border-radius: 25px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; margin-top: 20px; box-shadow: 0 4px 15px rgba(55, 97, 232, 0.3);" disabled>Continuar</button>
-        </div>
     </div>
     <script>
         function mostrarAvatares() {
@@ -880,47 +853,7 @@
             });
         }
 
-        function cargarMarcos() {
-            // Definimos los estilos de marcos universitarios
-            const marcosList = [
-                { name: 'Dorado Premium', id: 'marco elegante dorado premium universitario diplomas', color: 'linear-gradient(135deg, #d4af37, #ffd700, #ffed4e)' },
-                { name: 'Azul CESSA', id: 'marco azul institucional cessa universidad profesional', color: 'linear-gradient(135deg, #0047ab, #0066ff, #4da6ff)' },
-                { name: 'Plateado Moderno', id: 'marco plateado moderno minimalista universitario', color: 'linear-gradient(135deg, #a8a8a8, #d3d3d3, #f5f5f5)' },
-                { name: 'Negro Elegante', id: 'marco negro elegante clásico formal graduación', color: 'linear-gradient(135deg, #000000, #2c2c2c, #4a4a4a)' },
-                { name: 'Borgoña Tradicional', id: 'marco borgoña tradicional académico universitario', color: 'linear-gradient(135deg, #800020, #a0153e, #c71585)' },
-                { name: 'Verde Académico', id: 'marco verde académico institucional universidad', color: 'linear-gradient(135deg, #006400, #228b22, #32cd32)' },
-                { name: 'Bronce Clásico', id: 'marco bronce clásico vintage universitario antiguo', color: 'linear-gradient(135deg, #8b4513, #a0522d, #cd853f)' },
-                { name: 'Azul Real', id: 'marco azul real premium royal universitario', color: 'linear-gradient(135deg, #002366, #003d82, #1e5aa8)' },
-                { name: 'Blanco Sofisticado', id: 'marco blanco sofisticado perlado universitario', color: 'linear-gradient(135deg, #f8f9fa, #ffffff, #e9ecef)' },
-                { name: 'Multicolor CESSA', id: 'marco multicolor cessa institucional vibrante moderno', color: 'linear-gradient(135deg, #0066ff, #00bcd4, #ffd700)' }
-            ];
 
-            const grid = document.getElementById('frames-grid');
-            grid.innerHTML = '';
-
-            marcosList.forEach(marco => {
-                const div = document.createElement('div');
-                div.className = 'frame-option';
-                div.style.cssText = `padding:15px;background:white;border:2px solid #e9ecef;border-radius:15px;cursor:pointer;transition:all 0.3s ease;text-align:center;width:120px;display:flex;flex-direction:column;align-items:center;gap:10px;`;
-                // Usamos un truco de CSS para mostrar solo el borde con el degradado (marco) y el centro blanco
-                div.innerHTML = `<div style="width:100%;height:80px;background:linear-gradient(#fff, #fff) padding-box, ${marco.color} border-box;border: 5px solid transparent;border-radius:8px;margin-bottom:5px;box-shadow:0 2px 5px rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;">
-                                    <span style="font-size:1.5rem;opacity:0.2;">🎓</span>
-                                </div>
-                                <span style="font-size:0.9rem;font-weight:600;color:#333;">${marco.name}</span>`;
-                
-                div.addEventListener('click', () => {
-                    document.querySelectorAll('.frame-option').forEach(opt => {
-                        opt.style.borderColor = '#e9ecef';
-                        opt.style.transform = 'none';
-                    });
-                    div.style.borderColor = '#3761e8';
-                    div.style.transform = 'scale(1.05)';
-                    window.marcoSeleccionado = marco.id; // Guardamos la selección para app.js
-                    document.getElementById('btn-frame-next').disabled = false;
-                });
-                grid.appendChild(div);
-            });
-        }
 
         function selectShirt(shirt, element) {
             // Remover selección anterior
@@ -954,7 +887,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('shirt-section').style.display = 'none';
             document.getElementById('name-first-section').style.display = 'none';
-            document.getElementById('frame-section').style.display = 'none';
             // Paso 1: Términos
             const termsCheckbox = document.getElementById('termsCheckbox');
             const btnTermsNext = document.getElementById('btn-terms-next');
@@ -985,14 +917,6 @@
             document.getElementById('btn-shirt-next').addEventListener('click', function() {
                 if (window.camisetaSeleccionada) {
                     document.getElementById('shirt-section').style.display = 'none';
-                    document.getElementById('frame-section').style.display = 'block';
-                    cargarMarcos();
-                }
-            });
-            // Paso 4: Marco (Nuevo Listener)
-            document.getElementById('btn-frame-next').addEventListener('click', function() {
-                if (window.marcoSeleccionado) {
-                    document.getElementById('frame-section').style.display = 'none';
                     document.getElementById('inicioContainer').style.display = 'none';
                     document.getElementById('generatorContainer').style.display = 'block';
                     abrirCamaraAutomatica();
@@ -1132,7 +1056,6 @@
             document.getElementById('terms-section').style.display = 'block';
             document.getElementById('name-first-section').style.display = 'none';
             document.getElementById('shirt-section').style.display = 'none';
-            document.getElementById('frame-section').style.display = 'none';
             document.getElementById('inicioContainer').style.display = 'flex';
             document.getElementById('termsCheckbox').checked = false;
             document.getElementById('btn-terms-next').disabled = true;

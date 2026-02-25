@@ -111,7 +111,7 @@ body::before {
 /* Upload Area */
 .upload-area {
     position: relative;
-    border: 3px dashed var(--border);
+    border: none;
     border-radius: 1rem;
     padding: 3rem 2rem;
     text-align: center;
@@ -126,12 +126,10 @@ body::before {
 }
 
 .upload-area:hover {
-    border-color: var(--primary);
     background: #f0f0ff;
 }
 
 .upload-area.drag-over {
-    border-color: var(--primary);
     background: #e0e7ff;
     transform: scale(1.02);
 }
@@ -198,7 +196,7 @@ body::before {
 #promptInput {
     width: 100%;
     padding: 1rem;
-    border: 2px solid var(--border);
+    border: none;
     border-radius: 0.5rem;
     font-size: 1rem;
     font-family: inherit;
@@ -208,7 +206,6 @@ body::before {
 
 #promptInput:focus {
     outline: none;
-    border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
@@ -224,7 +221,7 @@ body::before {
 
 .example-btn {
     background: var(--light);
-    border: 1px solid var(--border);
+    border: none;
     border-radius: 0.5rem;
     padding: 0.5rem 1rem;
     margin: 0.25rem;
@@ -237,7 +234,6 @@ body::before {
 .example-btn:hover {
     background: var(--primary);
     color: white;
-    border-color: var(--primary);
     transform: translateY(-2px);
 }
 
@@ -247,7 +243,7 @@ body::before {
     padding: 1.25rem 2rem;
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(16, 185, 129, 0.8));
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: none;
     color: white;
     border-radius: 25px;
     font-size: 1.2rem;
@@ -337,7 +333,7 @@ body::before {
 .action-btn.secondary {
     background: var(--light);
     color: var(--dark);
-    border: 2px solid var(--border);
+    border: none;
 }
 
 .action-btn.secondary:hover {
@@ -599,7 +595,6 @@ body::before {
 
 #imagePreview.required {
     box-shadow: 0 0 0 4px var(--danger);
-    border: 2px solid var(--danger);
     animation: shake 0.3s;
 }
 
